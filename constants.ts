@@ -53,6 +53,14 @@ const septemberProfessions: Profession[] = [
       { name: "Крем GECO регенерирующий 100 мл", unit: "шт", quantity: 1 },
     ],
   },
+  {
+    name: "Мастер",
+    items: [
+        { name: "Перчатки с точечным покрытием", unit: "пар", quantity: 1 },
+        { name: "Мыло туалетное 100 гр", unit: "шт", quantity: 2 },
+        { name: "Крем GECO регенерирующий 100 мл", unit: "шт", quantity: 1 },
+    ],
+  }
 ];
 
 // Norms for October-November are slightly different
