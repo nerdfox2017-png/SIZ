@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { GoogleGenAI, Type } from "@google/genai";
 import { ProfessionSelector } from './components/ProfessionSelector';
@@ -165,12 +166,14 @@ function App() {
         },
       };
 
+      const prompt = `Проанализируй таблицу с нормами СИЗ в этом PDF. Таблица содержит колонки: "Должность", "Наименование товара", "ед. изм", "кол-во". В колонке "Должность" одна ячейка может относиться к нескольким строкам с товарами. Твоя задача - извлечь данные и сгруппировать их по должностям. Извлеки данные только для периода "${selectedPeriod}". Если период в документе не указан, считай, что все данные относятся к запрашиваемому периоду. Результат верни в виде JSON-массива объектов, где каждый объект представляет профессию.`;
+
       const response = await ai.models.generateContent({
         model: 'gemini-2.5-flash',
         contents: {
           parts: [
             { inlineData: { mimeType: 'application/pdf', data: base64Data } },
-            { text: `Извлеки нормы СИЗ из этого документа. Для каждой профессии составь список СИЗ с наименованием, количеством и единицей измерения.` },
+            { text: prompt },
           ],
         },
         config: {
@@ -179,7 +182,15 @@ function App() {
         },
       });
 
-      const jsonText = response.text.trim();
+      let jsonText = response.text.trim();
+      
+      // Clean up potential markdown code block fences from the response
+      if (jsonText.startsWith('```') && jsonText.endsWith('```')) {
+        const startIndex = jsonText.indexOf('\n') + 1;
+        const endIndex = jsonText.lastIndexOf('```');
+        jsonText = jsonText.substring(startIndex, endIndex).trim();
+      }
+      
       const newProfessions: Profession[] = JSON.parse(jsonText);
       
       setNormsData(prevNorms => ({
