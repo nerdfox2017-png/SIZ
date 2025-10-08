@@ -1,0 +1,5 @@
+{
+  "name": "PPE Needs Calculator",
+  "description": "An application to calculate the required Personal Protective Equipment (PPE) based on job roles and number of employees, with data derived from provided standards.",
+  "requestFramePermissions": []
+}
